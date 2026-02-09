@@ -1,7 +1,8 @@
 import React from "react";
 import FileCard from "./FileCard";
 
-export default function FileList({ files, onDownload, onSoftDelete, onHardDelete }) {
+export default function FileList({ files, onDownload, onSoftDelete, onHardDelete, onRestore,
+  isArchived = false }) {
   return (
     <div>
       <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -19,6 +20,8 @@ export default function FileList({ files, onDownload, onSoftDelete, onHardDelete
               onDownload={onDownload}
               onSoftDelete={onSoftDelete}
               onHardDelete={onHardDelete}
+               onRestore={onRestore}
+          isArchived={isArchived}
             />
           ))}
         </div>

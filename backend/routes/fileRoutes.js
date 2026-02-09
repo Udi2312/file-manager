@@ -7,6 +7,8 @@ import {
   downloadFile,
   softDeleteFile,
   hardDeleteFile,
+  listArchivedFiles,
+  restoreFile,
 } from "../controllers/fileController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -36,5 +38,12 @@ router.patch("/:id/soft-delete", authMiddleware, softDeleteFile);
 
 // Hard Delete File
 router.delete("/:id/hard-delete", authMiddleware, hardDeleteFile);
+
+// List Archived Files
+router.get("/archived", authMiddleware, listArchivedFiles);
+
+// Restore File
+router.patch("/:id/restore", authMiddleware, restoreFile);
+
 
 export default router;

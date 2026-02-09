@@ -1,26 +1,11 @@
 import multer from "multer";
-import path from "path";
 
 /* ===========================
-   MULTER STORAGE CONFIG
+   MULTER MEMORY STORAGE CONFIG
+   (Best for Cloud Upload)
 =========================== */
 
-// Store file temporarily in "uploads/" folder
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-
-  filename: (req, file, cb) => {
-    const uniqueName =
-      Date.now() + "-" + Math.round(Math.random() * 1e9);
-
-    cb(
-      null,
-      uniqueName + path.extname(file.originalname)
-    );
-  },
-});
+const storage = multer.memoryStorage();
 
 /* ===========================
    FILE FILTER (Optional)

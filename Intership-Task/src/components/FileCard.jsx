@@ -1,38 +1,62 @@
 import React from "react";
 
-export default function FileCard({ file, onDownload, onSoftDelete, onHardDelete }) {
+export default function FileCard({
+  file,
+  onDownload,
+  onSoftDelete,
+  onHardDelete,
+  onRestore,
+  isArchived = false,
+}) {
   const formattedDate = new Date(file.uploadedAt).toLocaleString("en-IN", {
     dateStyle: "medium",
     timeStyle: "short",
   });
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border border-gray-200 p-4 rounded-lg bg-white">
+    <div className="flex justify-between items-center border p-4 rounded-xl bg-gray-50">
       {/* File Info */}
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-gray-900 truncate">{file.name}</p>
-        <p className="text-sm text-gray-500 mt-0.5">{formattedDate}</p>
+      <div>
+        <p className="font-semibold text-gray-800">{file.fileName}</p>
+        <p className="text-sm text-gray-500 mt-1">
+          Uploaded: {formattedDate}
+        </p>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2">
+      {/* Buttons */}
+      <div className="flex gap-2">
+        {/* Download always */}
         <button
           onClick={() => onDownload(file.id)}
-          className="bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 font-medium text-sm"
+          className="px-3 py-1.5 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
         >
           Download
         </button>
 
-        <button
-          onClick={() => onSoftDelete(file.id)}
-          className="bg-yellow-600 text-white px-3 py-1.5 rounded-md hover:bg-yellow-700 font-medium text-sm"
-        >
-          Archive
-        </button>
+        {/* ✅ If Active File → Archive */}
+        {!isArchived && (
+          <button
+            onClick={() => onSoftDelete(file.id)}
+            className="px-3 py-1.5 text-sm rounded-lg bg-yellow-500 text-white hover:bg-yellow-600"
+          >
+            Archive
+          </button>
+        )}
 
+        {/* ✅ If Archived File → Restore */}
+        {isArchived && (
+          <button
+            onClick={() => onRestore(file.id)}
+            className="px-3 py-1.5 text-sm rounded-lg bg-green-600 text-white hover:bg-green-700"
+          >
+            Restore
+          </button>
+        )}
+
+        {/* Hard Delete always */}
         <button
           onClick={() => onHardDelete(file.id)}
-          className="bg-red-600 text-white px-3 py-1.5 rounded-md hover:bg-red-700 font-medium text-sm"
+          className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700"
         >
           Delete
         </button>
