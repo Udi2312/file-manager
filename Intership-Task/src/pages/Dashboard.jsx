@@ -1,192 +1,191 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar"
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
 import FileUpload from "../components/FileUpload";
 import FileList from "../components/FileList";
-import { useEffect } from "react";
 
 export default function Dashboard() {
-  const [files , setFiles] = useState([
-    { id: 1, name: "resume.pdf", uploadedAt: "2026-02-07" },
-    { id: 2, name: "photo.png", uploadedAt: "2026-02-06" },
-  ]);
-  
- const handleUpload = async (file) => {
-  try {
-    const token = localStorage.getItem("token");
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    // ✅ FormData is required for file upload
-    const formData = new FormData();
-    formData.append("file", file);
+  /* ===========================
+     FETCH FILES
+  =========================== */
+  const fetchFiles = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/files/upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`, // JWT required
-      },
-      body: formData, // send file
-    });
+      const res = await fetch("http://localhost:5000/api/files", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.message);
-      return;
+      if (res.ok) {
+        const filesWithId = data.map((file) => ({
+          ...file,
+          id: file._id,
+        }));
+
+        setFiles(filesWithId);
+      }
+    } catch (error) {
+      console.log("Fetch Files Error:", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    alert("✅ File Uploaded Successfully!");
-    console.log("Uploaded File Response:", data);
-
-    // ✅ Refresh file list to show new file immediately
+  useEffect(() => {
     fetchFiles();
-  } catch (error) {
-    console.log("Upload Error:", error);
-    alert("Upload Failed!");
-  }
-};
+  }, []);
 
+  /* ===========================
+     UPLOAD FILE
+  =========================== */
+  const handleUpload = async (file) => {
+    try {
+      const token = localStorage.getItem("token");
 
-  const handleDownload = async (id) => {
-    console.log(id);
-  try {
-   const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("file", file);
 
-  const res = await fetch(
-    `http://localhost:5000/api/files/${id}/download`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      const res = await fetch("http://localhost:5000/api/files/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        alert("Upload failed!");
+        return;
+      }
+
+      fetchFiles();
+    } catch (error) {
+      console.log("Upload Error:", error);
     }
-  );
+  };
 
-  const blob = await res.blob(); // ✅ not json()
+  /* ===========================
+     DOWNLOAD FILE
+  =========================== */
+  const handleDownload = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
-  const url = window.URL.createObjectURL(blob);
+      const res = await fetch(
+        `http://localhost:5000/api/files/${id}/download`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "file"; // backend provides real name
-  a.click();
-    console.log("Download Response:", a);
-  } catch (error) {
-    console.log("Download Error:", error);
-    alert("Download Failed!");
-  }
-};
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
 
+      const a = document.createElement("a");
+      a.href = url;
+      a.click();
+    } catch (error) {
+      console.log("Download Error:", error);
+    }
+  };
 
- const handleSoftDelete = async (id) => {
-  try {
-    const token = localStorage.getItem("token");
+  /* ===========================
+     SOFT DELETE
+  =========================== */
+  const handleSoftDelete = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch(
-      `http://localhost:5000/api/files/${id}/soft-delete`,
-      {
+      await fetch(`http://localhost:5000/api/files/${id}/soft-delete`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      });
+
+      fetchFiles();
+    } catch (error) {
+      console.log("Soft Delete Error:", error);
+    }
+  };
+
+  /* ===========================
+     HARD DELETE
+  =========================== */
+  const handleHardDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "This will permanently delete the file. Continue?"
     );
 
-    const data = await res.json();
+    if (!confirmDelete) return;
 
-    if (!res.ok) {
-      alert(data.message);
-      return;
-    }
+    try {
+      const token = localStorage.getItem("token");
 
-    alert("🗑️ File Soft Deleted Successfully!");
-    console.log("Soft Delete Response:", data);
-
-    // ✅ Refresh file list after delete
-    fetchFiles();
-  } catch (error) {
-    console.log("Soft Delete Error:", error);
-    alert("Soft Delete Failed!");
-  }
-};
-
-const handleHardDelete = async (id) => {
-  const confirmDelete = window.confirm("⚠️ This will permanently delete the file. Are you sure?");
-  if (!confirmDelete) return;
-
-  try {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(
-      `http://localhost:5000/api/files/${id}/hard-delete`,
-      {
+      await fetch(`http://localhost:5000/api/files/${id}/hard-delete`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message);
-      return;
+      fetchFiles();
+    } catch (error) {
+      console.log("Hard Delete Error:", error);
     }
+  };
 
-    alert("🔥 File Permanently Deleted Successfully!");
-    console.log("Hard Delete Response:", data);
-
-    // ✅ Refresh file list after delete
-    fetchFiles();
-  } catch (error) {
-    console.log("Hard Delete Error:", error);
-    alert("Hard Delete Failed!");
-  }
-};
-
-const fetchFiles = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch("http://localhost:5000/api/files", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      // Map MongoDB _id to id for consistency
-      const filesWithId = data.map(file => ({
-        ...file,
-        id: file._id
-      }));
-      setFiles(filesWithId); // update UI with real MongoDB files
-    }
-  } catch (error) {
-    console.log("Fetch Files Error:", error);
-  }
-};
-
-useEffect(() => {
-  fetchFiles();
-}, []);
-
-
+  /* ===========================
+     UI
+  =========================== */
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <div className="max-w-3xl mx-auto">
-        <Navbar />
+  <div className="min-h-screen bg-gray-50 flex justify-center items-center py-10">
+    <div className="w-full max-w-5xl px-6 space-y-6">
+      {/* Navbar */}
+      <Navbar />
 
-        <div className="bg-white p-8 rounded-2xl shadow-lg">
-          <FileUpload onUpload={handleUpload} />
+      {/* Page Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold text-gray-900">
+          Your Files
+        </h1>
+        <p className="text-sm text-gray-500">
+          Upload, manage and securely download your documents.
+        </p>
+      </div>
+
+      {/* Upload Card */}
+      <div className="bg-white border rounded-2xl p-6">
+        <FileUpload onUpload={handleUpload} />
+      </div>
+
+      {/* Files Section */}
+      <div className="bg-white border rounded-2xl p-6">
+        {loading ? (
+          <p className="text-gray-500 text-sm">Loading files...</p>
+        ) : files.length === 0 ? (
+          <p className="text-gray-500 text-sm">
+            No files uploaded yet. Upload your first file above 📂
+          </p>
+        ) : (
           <FileList
             files={files}
             onDownload={handleDownload}
             onSoftDelete={handleSoftDelete}
             onHardDelete={handleHardDelete}
           />
-        </div>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
+
 }

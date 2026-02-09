@@ -10,7 +10,7 @@ export default function Register() {
     password: "",
   });
 
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,45 +55,55 @@ export default function Register() {
       footer={
         <>
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 font-semibold">
+          <a href="/login" className="font-medium">
             Login
           </a>
         </>
       }
     >
       <form onSubmit={handleRegister} className="space-y-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter Name"
-          value={form.name}
-          onChange={handleChange}
-          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div>
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={form.name}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-          {loading ? "Registering..." : "Register"}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2.5 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
       </form>
     </AuthCard>

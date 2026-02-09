@@ -4,14 +4,14 @@ import FileCard from "./FileCard";
 export default function FileList({ files, onDownload, onSoftDelete, onHardDelete }) {
   return (
     <div>
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        Your Uploaded Files
+      <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        Your Files
       </h3>
 
       {files.length === 0 ? (
-        <p className="text-gray-500">No files uploaded yet.</p>
+        <p className="text-gray-500 text-center py-8">No files uploaded yet.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {files.map((file) => (
             <FileCard
               key={file.id}

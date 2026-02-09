@@ -9,7 +9,7 @@ export default function Login() {
     password: "",
   });
 
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,7 +17,7 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-     setLoading(true);
+    setLoading(true);
     console.log("Login Data:", form);
 
     // TODO: Backend API call
@@ -57,35 +57,43 @@ export default function Login() {
       footer={
         <>
           New user?{" "}
-          <a href="/register" className="text-blue-600 font-semibold">
+          <a href="/register" className="font-medium">
             Register
           </a>
         </>
       }
     >
       <form onSubmit={handleLogin} className="space-y-4">
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+        <div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-        <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-          {loading ? "Logging in..." : "Login"}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2.5 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? "Logging in..." : "Sign In"}
         </button>
       </form>
     </AuthCard>

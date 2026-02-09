@@ -10,14 +10,14 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-white shadow-md px-6 py-4 flex justify-between items-center rounded-xl mb-6">
-      <h1 className="text-2xl font-bold text-blue-600">
-        Secure File Manager
+    <nav className="w-full bg-white px-6 py-4 flex justify-between items-center rounded-lg mb-6 shadow-sm">
+      <h1 className="text-xl font-semibold text-gray-900">
+        File Manager
       </h1>
 
       <button
         onClick={handleLogout}
-        className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition"
+        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium text-sm"
       >
         Logout
       </button>
