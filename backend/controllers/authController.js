@@ -24,10 +24,23 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: { id: user._id, email: user.email },
-    });
+    // Generate token directly after register
+const token = jwt.sign(
+  { id: user._id },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
+
+res.status(201).json({
+  message: "User registered successfully",
+  token,
+  user: {
+    id: user._id,
+    email: user.email,
+    name: user.name,
+  },
+});
+
   } catch (error) {
     res.status(500).json({ message: "Register failed", error });
   }

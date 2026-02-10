@@ -38,9 +38,10 @@ export default function Register() {
         setLoading(false);
         return;
       }
+      localStorage.setItem("token", data.token);
 
-      alert("✅ Registration Successful! Please login.");
-      navigate("/login");
+      alert("✅ Registration Successfull !");
+      navigate("/dashboard");
     } catch (error) {
       console.log("Register Error:", error);
       alert("Something went wrong!");
